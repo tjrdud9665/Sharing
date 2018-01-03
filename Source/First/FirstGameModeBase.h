@@ -18,7 +18,21 @@ class FIRST_API AFirstGameModeBase : public AGameModeBase
 public:
 	AFirstGameModeBase(const FObjectInitializer& ObjectInitializer);
 	
+
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+
+
+	UFUNCTION(Client , Reliable )
+	void OnPlayerLogin();
+
+	void OnPlayerLogin_Implementation();
+
+	//bool OnPlayerLogin_Validate();
+
+private:
+	UPROPERTY()		
+	TSubclassOf<class AFirstPlayerController> ControllerClass;
 	
-	
-	
+
+
 };

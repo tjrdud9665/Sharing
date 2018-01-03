@@ -25,7 +25,9 @@ public:
 
 public:
 	UFUNCTION()
-	void AddPlayerFramePanel(class UPlayerFrame* FrameForSlot);
+	void AddPlayerFramePanel(class UPlayerFrame* FrameForSlot, int32 Col, int32 Row);
+	UFUNCTION()
+	void ClearPlayerFramePanel();
 
 
 };

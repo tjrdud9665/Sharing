@@ -11,9 +11,11 @@
 #include "Classes/Kismet/GameplayStatics.h"
 #include "Gameframework/PlayerStart.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "First.h"
+#include "GameFramework/GameStateBase.h"
 #include "HUDLayOut.h"
+#include "Net/UnrealNetwork.h"
 #include "PlayerFrame.h"
+
 
 
 
@@ -72,9 +74,9 @@ void AFirstPlayerController::BeginPlay()
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 
-	Client_UpdatePlayerFrame();
-
-
+	
+	
+	Client_UpdatePlayerFrame();	
 	
 
 }
@@ -99,23 +101,39 @@ void AFirstPlayerController::UpdateFollowCamera(float DeltaTime)
 
 }
 
-void AFirstPlayerController::Client_UpdatePlayerFrame_Implementation()
+void AFirstPlayerController::UpdatePlayerFrame()
 {
 	if (!HUD)
 	{
 		HUD = CreateWidget<UHUDLayOut>(this, HUDLayOut.Get());
 	}
-	
-	//if (!HUD->IsInViewport())
+
+	if (!HUD->IsInViewport())
 	{
 		HUD->AddToViewport();
 	}
 
-	
-	UPlayerFrame* Slot = CreateWidget<UPlayerFrame>(this, PlayerFrameClass.Get());
+	auto GameState = UGameplayStatics::GetGameState(this);
+	TArray<APlayerState*> PlayerArr;
+	if (GameState)
+	{
+		PlayerArr = GameState->PlayerArray;
+	}	
 
-	
-	HUD->AddPlayerFramePanel(Slot);
+	HUD->ClearPlayerFramePanel();
+	UE_LOG(LogTemp, Warning, TEXT("%d "), PlayerArr.Num());
+	for (int32 i = 0; i < PlayerArr.Num(); i++)
+	{		
+		UPlayerFrame* Slot = CreateWidget<UPlayerFrame>(this, PlayerFrameClass.Get());
+		HUD->AddPlayerFramePanel(Slot, 0, i);
+	}
+
+}
+
+void AFirstPlayerController::Client_UpdatePlayerFrame_Implementation()
+{
+
+	UpdatePlayerFrame();
 	
 }
 

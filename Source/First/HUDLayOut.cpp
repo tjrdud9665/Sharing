@@ -16,15 +16,14 @@ bool UHUDLayOut::Initialize()
 
 }
 
-void UHUDLayOut::AddPlayerFramePanel(UPlayerFrame* FrameForSlot)
+void UHUDLayOut::AddPlayerFramePanel(UPlayerFrame* FrameForSlot,int32 Col ,int32 Row)
 {
-	PlayerFramePanel->ClearChildren();		
 
 	auto Slot = PlayerFramePanel->AddChildToUniformGrid(FrameForSlot);
 
-	TArray<APlayerState*> PlayerArr = UGameplayStatics::GetGameState(this)->PlayerArray;
 
-	int32 i = 0;
+	Slot->SetColumn(Col);
+	Slot->SetRow(Row);	
 	//for(int32 i = 0 ; i <PlayerArr.Num(); i++)
 	//{
 	//	Slot->SetRow(i++);
@@ -32,4 +31,9 @@ void UHUDLayOut::AddPlayerFramePanel(UPlayerFrame* FrameForSlot)
 
 
 
+}
+
+void UHUDLayOut::ClearPlayerFramePanel()
+{
+	PlayerFramePanel->ClearChildren();
 }

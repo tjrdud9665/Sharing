@@ -78,15 +78,17 @@ public:
 
 
 //>Client Update
-
+public:
+	UFUNCTION(Reliable, Client)
+	void Client_UpdatePlayerFrame();
 private:
 	UFUNCTION()
 	void UpdateFollowCamera(float DeltaTime);
+	UFUNCTION()
+		void UpdatePlayerFrame();
 	
 	
 
-	UFUNCTION(Reliable, Client)
-	void Client_UpdatePlayerFrame();
 
 
 
