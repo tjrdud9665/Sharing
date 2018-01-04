@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "SType.h"
 #include "PlayerFrame.generated.h"
 
 /**
@@ -21,6 +22,10 @@ public:
 
 	virtual bool Initialize() override;
 
+	UFUNCTION()
+	void SetupPlayerController(class AFirstPlayerController* _Controller);
+
+
 private:
 	//Frame..
 	UPROPERTY(meta = (BindWidget))
@@ -31,26 +36,24 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* NameText;	
-
-
-
-
-
-	//************************HeatlhBar
-	UPROPERTY(BlueprintReadOnly,meta = (BindWidget) , meta = (AllowPrivateAccess = "true"))
-	class UProgressBar* HealthBar;
-
-	UPROPERTY(BlueprintReadOnly,meta = (BindWidget) , meta = (AllowPrivateAccess = "true"))
-	class UTextBlock* HealthText;
-
-
-	//************************ManaBar
-	UPROPERTY(meta = (BindWidget))
-	class UProgressBar* ManaBar;
-
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* ManaText;
-
 	
+	UPROPERTY(meta = (BindWidget))
+	class UVerticalBox* StatGauageContain;
+
+	UPROPERTY(EditDefaultsOnly, Category = "BarColor", meta = (AllowPrivateAccess = "true"))
+	TMap<EUnitStatType, FLinearColor> StatColors;
+
+
+private:
+	UPROPERTY()
+	class AFirstPlayerController* Controller;
+
+	UPROPERTY()
+	FStatGaugeInfo GaugeInfo;
+
+
+	UFUNCTION()
+	void SetStatBarGauageInfo(EUnitStatType _StatType);
+
 	
 };

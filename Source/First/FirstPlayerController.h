@@ -68,6 +68,9 @@ private:
 	UPROPERTY()
 	class UHUDLayOut* HUD;
 
+	UPROPERTY()
+		TArray<UPlayerFrame*> PlayerFrames;
+
 
 
 public:
@@ -81,6 +84,12 @@ public:
 public:
 	UFUNCTION(Reliable, Client)
 	void Client_UpdatePlayerFrame();
+	UFUNCTION(Reliable, Client)
+	void Client_UpdateProgressBar(EUnitStatType StatType, float NewPercent);	
+	void Client_UpdateProgressBar_Implementation(EUnitStatType StatType, float NewPercent);
+
+
+
 private:
 	UFUNCTION()
 	void UpdateFollowCamera(float DeltaTime);

@@ -21,15 +21,8 @@ void UHUDLayOut::AddPlayerFramePanel(UPlayerFrame* FrameForSlot,int32 Col ,int32
 
 	auto Slot = PlayerFramePanel->AddChildToUniformGrid(FrameForSlot);
 
-
 	Slot->SetColumn(Col);
 	Slot->SetRow(Row);	
-	//for(int32 i = 0 ; i <PlayerArr.Num(); i++)
-	//{
-	//	Slot->SetRow(i++);
-	//}
-
-
 
 }
 

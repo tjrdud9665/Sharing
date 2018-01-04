@@ -15,7 +15,7 @@
 #include "HUDLayOut.h"
 #include "Net/UnrealNetwork.h"
 #include "PlayerFrame.h"
-
+#include "Kismet/KismetArrayLibrary.h"
 
 
 
@@ -81,6 +81,16 @@ void AFirstPlayerController::BeginPlay()
 
 }
 
+void AFirstPlayerController::Client_UpdateProgressBar_Implementation(EUnitStatType StatType, float NewPercent)
+{
+	if (HUD)
+	{
+		
+
+
+	}
+}
+
 void AFirstPlayerController::UpdateFollowCamera(float DeltaTime)
 {
 	if (!TopDownPawn)
@@ -121,10 +131,18 @@ void AFirstPlayerController::UpdatePlayerFrame()
 	}	
 
 	HUD->ClearPlayerFramePanel();
+	
+	PlayerFrames.Empty();
+	
 	UE_LOG(LogTemp, Warning, TEXT("%d "), PlayerArr.Num());
+
 	for (int32 i = 0; i < PlayerArr.Num(); i++)
 	{		
 		UPlayerFrame* Slot = CreateWidget<UPlayerFrame>(this, PlayerFrameClass.Get());
+
+		Slot->SetupPlayerController(this);
+		PlayerFrames.Add(Slot);
+
 		HUD->AddPlayerFramePanel(Slot, 0, i);
 	}
 

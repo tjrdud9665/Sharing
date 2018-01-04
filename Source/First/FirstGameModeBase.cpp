@@ -81,11 +81,11 @@ void AFirstGameModeBase::OnPlayerLogin_Implementation()
 
 
 	for (AActor* Controller : Controllers)
-	{
-
+	{		
+		
 		auto Con = Cast<AFirstPlayerController>(Controller);
 		if (Con)
-		{
+		{			
 			Con->Client_UpdatePlayerFrame();
 		}
 

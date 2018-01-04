@@ -30,14 +30,22 @@
 UENUM()
 enum class EUnitStatType : uint8
 {
+
+/************************************************************************/
+/*   GauageInfo                                                         */
+/************************************************************************/
 	E_ST_NULL,
 
 	E_ST_HEALTH,
 
 	E_ST_MANA,
 
-	E_ST_MOVESPEED,			//> Use Multiply with Movement Speed with Percentage..
-	
+	E_ST_ENERGY,
+
+	E_ST_RAGE,
+
+	//
+	E_ST_MOVESPEED,			//> Use Multiply with Movement Speed with Percentage..	
 
 	MAX
 };
@@ -109,6 +117,23 @@ struct FSkillInfo
 
 
 };
+
+USTRUCT()
+struct FStatGaugeInfo
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY()
+	EUnitStatType StatType;
+
+	UPROPERTY()
+	FUnitStatInfo Stat;
+
+	UPROPERTY()
+	FLinearColor BarColor;
+
+};
+
 
 
 USTRUCT()

@@ -27,7 +27,7 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FUnitStatInfo GetStatInfo(EUnitStatType StatType);
-		
+
 
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -63,5 +63,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 		
+
+	FORCEINLINE const TMap<EUnitStatType, FUnitStatInfo> GetUnitStatMap()
+	{
+		return UnitStatMap;
+
+	}
 	
 };

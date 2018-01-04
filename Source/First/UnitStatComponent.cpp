@@ -16,7 +16,7 @@ UUnitStatComponent::UUnitStatComponent(const class FObjectInitializer& ObjectIni
 
 FUnitStatInfo UUnitStatComponent::GetStatInfo(EUnitStatType StatType)
 {
-	return *UnitStatMap.Find(StatType);
+	return *UnitStatMap.Find(StatType);	
 }
 
 void UUnitStatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
