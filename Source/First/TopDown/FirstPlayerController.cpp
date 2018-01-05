@@ -1,22 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "FirstPlayerController.h"
+#include "TopDown/FirstPlayerController.h"
 #include "AI/Navigation/NavigationSystem.h"
-#include "BaseCharacter.h"
+#include "Character/BaseCharacter.h"
 #include "DrawDebugHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "CharacterAIController.h"
-#include "TopDownPawn.h"
+#include "TopDown/TopDownPawn.h"
 #include "Classes/Kismet/GameplayStatics.h"
 #include "Gameframework/PlayerStart.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/GameStateBase.h"
-#include "HUDLayOut.h"
+#include "UI/HUDLayOut.h"
 #include "Net/UnrealNetwork.h"
-#include "PlayerFrame.h"
+#include "UI/PlayerFrame.h"
 #include "Kismet/KismetArrayLibrary.h"
-#include "UIFactory.h"
+#include "UI/UIFactory.h"
 
 
 

@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "PlayerFrame.h"
+#include "UI/PlayerFrame.h"
 #include "COmponents/ProgressBar.h"
 #include "Kismet/GameplayStatics.h"
-#include "FirstPlayerController.h"
-#include "UnitStatComponent.h"
-#include "UnitStatGauge.h"
-#include "FirstPlayerController.h"
+#include "TopDown/FirstPlayerController.h"
+#include "Character/UnitStatComponent.h"
+#include "UI/UnitStatGauge.h"
+#include "TopDown/FirstPlayerController.h"
 #include "Macro.h"
-#include "UIFactory.h"
+#include "UI/UIFactory.h"
 #include "Components/VerticalBox.h"
 
 UPlayerFrame::UPlayerFrame(const FObjectInitializer& ObjectInitializer)

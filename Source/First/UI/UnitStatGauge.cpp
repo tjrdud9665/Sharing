@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UnitStatGauge.h"
-#include "UnitStatComponent.h"
-#include "FirstPlayerController.h"
+#include "UI/UnitStatGauge.h"
+#include "Character/UnitStatComponent.h"
+#include "TopDown/FirstPlayerController.h"
 #include "Macro.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"

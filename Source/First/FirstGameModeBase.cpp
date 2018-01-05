@@ -3,7 +3,7 @@
 #include "FirstGameModeBase.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/HUD.h"
-#include "FirstPlayerController.h"
+#include "TopDown/FirstPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 

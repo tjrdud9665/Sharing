@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "HUDLayOut.h"
+#include "UI/HUDLayOut.h"
 #include "Components/UniformGridPanel.h"
-#include "PlayerFrame.h"
+#include "UI/PlayerFrame.h"
 #include "kismet/GameplayStatics.h"
 #include "Components/UniformGridSlot.h"
 #include "GameFramework/GameStateBase.h"

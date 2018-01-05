@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "BaseCharacter.h"
+#include "Character/BaseCharacter.h"
 #include "First.h"
-#include "UnitStatComponent.h"
+#include "Character/UnitStatComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "FirstPlayerController.h"
+#include "TopDown/FirstPlayerController.h"
 
 #include "UObject/ConstructorHelpers.h"
-#include "PlayerFrame.h"
+#include "UI/PlayerFrame.h"
 
 
 // Sets default values
