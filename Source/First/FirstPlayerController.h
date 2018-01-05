@@ -94,7 +94,7 @@ private:
 	UFUNCTION()
 	void UpdateFollowCamera(float DeltaTime);
 	UFUNCTION()
-		void UpdatePlayerFrame();
+	void UpdatePlayerFrame();
 	
 	
 

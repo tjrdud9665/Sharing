@@ -4,7 +4,6 @@
 
 #include "SType.generated.h"
 
-
 //UENUM()
 //enum class ENumSample : uint8
 //{

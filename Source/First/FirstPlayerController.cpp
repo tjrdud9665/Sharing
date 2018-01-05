@@ -16,6 +16,7 @@
 #include "Net/UnrealNetwork.h"
 #include "PlayerFrame.h"
 #include "Kismet/KismetArrayLibrary.h"
+#include "UIFactory.h"
 
 
 
@@ -132,18 +133,20 @@ void AFirstPlayerController::UpdatePlayerFrame()
 
 	HUD->ClearPlayerFramePanel();
 	
-	PlayerFrames.Empty();
+	PlayerFrames.Empty();	
 	
-	UE_LOG(LogTemp, Warning, TEXT("%d "), PlayerArr.Num());
-
 	for (int32 i = 0; i < PlayerArr.Num(); i++)
 	{		
-		UPlayerFrame* Slot = CreateWidget<UPlayerFrame>(this, PlayerFrameClass.Get());
+		//UPlayerFrame* Slot = CreateWidget<UPlayerFrame>(this, PlayerFrameClass.Get());
 
-		Slot->SetupPlayerController(this);
-		PlayerFrames.Add(Slot);
+		//Slot->SetupPlayerController(this);
+		//Slot->InitializeStatBars();
+		auto Frame = UIFactory::CreatePlayerFrame<UPlayerFrame>(PlayerFrameClass.Get(), this);
 
-		HUD->AddPlayerFramePanel(Slot, 0, i);
+		
+		PlayerFrames.Add(Frame);
+
+		HUD->AddPlayerFramePanel(Frame, 0, i);
 	}
 
 }

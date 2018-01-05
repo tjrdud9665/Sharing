@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "SType.h"
+
 #include "PlayerFrame.generated.h"
 
 /**
@@ -25,6 +26,13 @@ public:
 	UFUNCTION()
 	void SetupPlayerController(class AFirstPlayerController* _Controller);
 
+	
+	UFUNCTION()
+	void InitializeStatBars();
+
+	UFUNCTION()
+	void AddStatBar(TArray<EUnitStatType> Stats);
+
 
 private:
 	//Frame..
@@ -40,8 +48,11 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UVerticalBox* StatGauageContain;
 
-	UPROPERTY(EditDefaultsOnly, Category = "BarColor", meta = (AllowPrivateAccess = "true"))
-	TMap<EUnitStatType, FLinearColor> StatColors;
+
+	UPROPERTY(EditDefaultsOnly, Category = "StatGauage", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UUnitStatGauge> UnitGauageBarClass;
+
+	
 
 
 private:
@@ -49,11 +60,12 @@ private:
 	class AFirstPlayerController* Controller;
 
 	UPROPERTY()
-	FStatGaugeInfo GaugeInfo;
+	TArray<class UUnitStatGauge*> StatGauages;
 
 
-	UFUNCTION()
-	void SetStatBarGauageInfo(EUnitStatType _StatType);
+
+
+	
 
 	
 };

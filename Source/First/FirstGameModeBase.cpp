@@ -34,38 +34,11 @@ void AFirstGameModeBase::PostLogin(APlayerController* NewPlayer)
 	Super::PostLogin(NewPlayer);	
 	FTimerHandle TimerHandle;
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AFirstGameModeBase::OnPlayerLogin, 2.f, false);
-
-	//OnPlayerLogin();		
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AFirstGameModeBase::OnPlayerLogin, 3.0f, false);	
 
 
 }
 
-//void AFirstGameModeBase::OnPlayerLogin()
-//{
-//	//TODO : Find All Controller
-//	//		Call UpdatePlayerFrame For UI
-//	TSubclassOf<AFirstPlayerController> ControllerClass;
-//	TArray<AActor*> Controllers;
-//
-//
-//
-//	UGameplayStatics::GetAllActorsOfClass(this, ControllerClass, Controllers);
-//	UE_LOG(LogTemp, Warning, TEXT("Controller : %d"), Controllers.Num());
-//
-//
-//	
-//	for (AActor* Controller : Controllers)
-//	{
-//
-//		auto Con = Cast<AFirstPlayerController>(Controller);
-//		if (Con)
-//		{
-//			Con->Client_UpdatePlayerFrame();
-//		}
-//
-//	}
-//}
 
 void AFirstGameModeBase::OnPlayerLogin_Implementation()
 {

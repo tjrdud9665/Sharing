@@ -14,6 +14,8 @@ UCLASS()
 class FIRST_API UUnitStatGauge : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	UUnitStatGauge(const class FObjectInitializer& ObjectInitializer);
 	
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget) , meta = (AllowPrivateAccess = "true"))
@@ -22,10 +24,22 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget), meta = (AllowPrivateAccess = "true"))
 	class UTextBlock* StatText;
 
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	TMap<EUnitStatType, FLinearColor> StatColors;
+
+
+public:
+	UFUNCTION()
+	void Setup(EUnitStatType StatType , class AFirstPlayerController* PlayerController);
+
 
 private:
 	UPROPERTY()
 	FStatGaugeInfo GauageInfo;
+
+	UPROPERTY()
+	class AFirstPlayerController* Controller;
+
 
 
 
