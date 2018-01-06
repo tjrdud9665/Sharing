@@ -17,6 +17,7 @@
 #include "UI/PlayerFrame.h"
 #include "Kismet/KismetArrayLibrary.h"
 #include "UI/UIFactory.h"
+#include "Macro.h"
 
 
 
@@ -38,10 +39,13 @@ void AFirstPlayerController::PlayerTick(float DeltaTime)
 	GetHitResult(Hit);
 
 	if (bMoveToMouseCursor)
-	{
-		//Movement..
+	{		//Movement..
 		MoveToDestination(Hit);
-
+	}
+	else if (bAttackClicked)
+	{
+		//Attack
+		MouseAttack(AttackTraceHit);
 	}
 
 }
@@ -63,6 +67,9 @@ void AFirstPlayerController::SetupInputComponent()
 	InputComponent->BindAction("MovetoCursor", IE_Pressed, this, &AFirstPlayerController::OnMovetoCursorPressed);
 	InputComponent->BindAction("MovetoCursor", IE_Released, this, &AFirstPlayerController::OnMovetoCursorReleased);
 
+
+	InputComponent->BindAction("Attack", IE_Pressed, this, &AFirstPlayerController::OnAttackPressed);
+	
 	UE_LOG(LogTemp, Warning, TEXT("Bind Key Input!!"));
 }
 
@@ -118,7 +125,7 @@ void AFirstPlayerController::UpdatePlayerFrame()
 	{
 		HUD = CreateWidget<UHUDLayOut>(this, HUDLayOut.Get());
 	}
-
+	SAFE_ACCESS_NOLOG(HUD);
 	if (!HUD->IsInViewport())
 	{
 		HUD->AddToViewport();
@@ -137,13 +144,8 @@ void AFirstPlayerController::UpdatePlayerFrame()
 	
 	for (int32 i = 0; i < PlayerArr.Num(); i++)
 	{		
-		//UPlayerFrame* Slot = CreateWidget<UPlayerFrame>(this, PlayerFrameClass.Get());
-
-		//Slot->SetupPlayerController(this);
-		//Slot->InitializeStatBars();
 		auto Frame = UIFactory::CreatePlayerFrame<UPlayerFrame>(PlayerFrameClass.Get(), this);
 
-		
 		PlayerFrames.Add(Frame);
 
 		HUD->AddPlayerFramePanel(Frame, 0, i);
@@ -239,7 +241,7 @@ bool AFirstPlayerController::Server_Respawn_Validate()
 
 void AFirstPlayerController::GetHitResult(FHitResult& hit)
 {
-	GetHitResultUnderCursor(ECC_Visibility, false, hit);
+	GetHitResultUnderCursor(ECC_Visibility, true, hit);
 
 	if (Role < ROLE_Authority)
 	{
@@ -293,10 +295,123 @@ bool AFirstPlayerController::Server_MoveToDestination_Validate(FHitResult& Hit)
 	return true;
 }
 
+void AFirstPlayerController::MouseAttack(const FHitResult& Hit)
+{
+	//TODO : Change Casting Type AttackSubject ABaseCharacter - > AttackableObject...
+	auto ClickedActor = Hit.GetActor();
+
+	auto AttackSubject = Cast<ABaseCharacter>(ClickedActor);
+		
+	
+	if (!AttackSubject)
+	{
+		bAttackClicked = false;
+		return;
+	}
+
+	LastAttackSubject = AttackSubject;
+
+	SAFE_ACCESS_NOLOG(PlayerCharacter);
+
+	if (AttackSubject == PlayerCharacter)
+		return;
+		
+
+	//Get Dist Character and AttackSubject..
+	FVector Diff = (PlayerCharacter->GetActorLocation() - AttackSubject->GetActorLocation());
+	float Distance = Diff.Size();
+	FVector Direction = Diff.GetSafeNormal();
+
+	//So Far
+	if (PlayerCharacter->GetDefaultAttack().Distance < Distance)
+	{
+		//Go to Actor  
+		MoveToActor(Hit);
+	}
+	else
+	{
+		//TODO : Change Direction to AttackSubject with Lerp..
+		float Deltatime = UGameplayStatics::GetWorldDeltaSeconds(this);
+				
+		//PlayerChFaracter->GetActorRotation()
+
+		auto LookRot = UKismetMathLibrary::FindLookAtRotation(PlayerCharacter->GetActorLocation(), AttackSubject->GetActorLocation());
+		
+		auto CurrentRot = PlayerCharacter->GetActorRotation();
+
+		auto TargetRot = CurrentRot;
+
+		TargetRot.Yaw = LookRot.Yaw;
+
+		auto LerpedRotation= UKismetMathLibrary::RInterpTo(CurrentRot, TargetRot ,Deltatime, 12.0f);		
+		
+		PlayerCharacter->SetActorRotation(LerpedRotation);
+
+		PlayerCharacter->UseSkill(PlayerCharacter->GetDefaultAttack());
+
+	}
+	
+	
+
+	if (Role < ROLE_Authority)
+	{
+		Server_MouseAttack(Hit);
+
+	}
+}
+
+void AFirstPlayerController::Server_MouseAttack_Implementation(FHitResult& Hit)
+{
+	MouseAttack(Hit);
+}
+
+bool AFirstPlayerController::Server_MouseAttack_Validate(FHitResult& Hit)
+{
+	return true;
+}
+
+void AFirstPlayerController::MoveToActor(const FHitResult& Hit)
+{
+	SAFE_ACCESS_NOLOG(PlayerCharacter);
+
+	if (Hit.bBlockingHit)
+	{
+
+		if (AiController)
+		{
+			SAFE_ACCESS_NOLOG(Hit.GetActor());
+			float Dist = (-1.0f);
+			if (LastAttackSubject)
+			{
+				Dist = (PlayerCharacter->GetActorLocation() - LastAttackSubject->GetActorLocation()).Size()/2;
+			}
+
+			AiController->MoveToActor(Hit.GetActor(),PlayerCharacter->GetCurrentSkill().Distance/2);
+		}
+	}
+
+	if (Role < ROLE_Authority)
+	{
+		Server_MoveToActor(Hit);
+
+	}
+
+}
+
+void AFirstPlayerController::Server_MoveToActor_Implementation(FHitResult& Hit)
+{
+	MoveToActor(Hit);
+}
+
+bool AFirstPlayerController::Server_MoveToActor_Validate(FHitResult& Hit)
+{
+	return true;
+}
+
 void AFirstPlayerController::OnMovetoCursorPressed()
 {
 	bMoveToMouseCursor = true;	
-
+	bAttackClicked = false;
 	//if it is  client
 	if (Role < ROLE_Authority)
 	{
@@ -307,9 +422,39 @@ void AFirstPlayerController::OnMovetoCursorPressed()
 
 }
 
+void AFirstPlayerController::OnAttackPressed()
+{
+	bAttackClicked = true;	
+	
+	GetHitResult(AttackTraceHit);
+	
+	
+	if (Role < ROLE_Authority)
+	{
+		//Request the Server whit RPC..
+		Server_OnAttackPressed();
+
+	}
+
+}
+
+
+
+void AFirstPlayerController::Server_OnAttackPressed_Implementation()
+{
+	bAttackClicked = true;
+	OnAttackPressed();
+}
+
+bool AFirstPlayerController::Server_OnAttackPressed_Validate()
+{
+	return true;
+}
+
 void AFirstPlayerController::Server_OnMovetoCursorPressed_Implementation()
 {
 	bMoveToMouseCursor = true;
+	bAttackClicked = false;
 	OnMovetoCursorPressed();
 }
 

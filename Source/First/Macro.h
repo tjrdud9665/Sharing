@@ -11,4 +11,4 @@
 
 #define SAFE_ACCESS_VOID(P , Message)  if(!P){UE_LOG(LogTemp ,Error, TEXT("%s"),Message) return;}
 #define SAFE_ACCESS(P, Message) if(!P){UE_LOG(LogTemp ,Error, TEXT("%s"),Message) return 0;}
-
+#define SAFE_ACCESS_NOLOG(P)  if(!P){return;}

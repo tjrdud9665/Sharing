@@ -38,6 +38,15 @@ private:
 	UPROPERTY()
 	uint32 bMoveToMouseCursor : 1;
 
+	UPROPERTY()
+	uint32 bAttackClicked : 1;
+
+	UPROPERTY()
+	class AActor* LastAttackSubject;
+
+	UPROPERTY()
+	FHitResult AttackTraceHit;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CamFollowSpeed" , meta = (AllowPrivateAccess = "true"))
 	float CamearaSpeed = 12.0f;
 
@@ -69,7 +78,7 @@ private:
 	class UHUDLayOut* HUD;
 
 	UPROPERTY()
-		TArray<UPlayerFrame*> PlayerFrames;
+	TArray<UPlayerFrame*> PlayerFrames;
 
 
 
@@ -149,21 +158,35 @@ private:
 	void Server_MoveToDestination_Implementation(FHitResult& Hit);
 
 	bool Server_MoveToDestination_Validate(FHitResult& Hit);
-	
+
+	UFUNCTION()
+	void MouseAttack(const FHitResult& Hit);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MouseAttack(const FHitResult& Hit);
+
+	void Server_MouseAttack_Implementation(FHitResult& Hit);
+
+	bool Server_MouseAttack_Validate(FHitResult& Hit);
 
 	
 
 
+	UFUNCTION()
+	void MoveToActor(const FHitResult& Hit);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MoveToActor(const FHitResult& Hit);
 
+	void Server_MoveToActor_Implementation(FHitResult& Hit);
+	
+	bool Server_MoveToActor_Validate(FHitResult& Hit);
 
-		
 
 
 
 	UFUNCTION()
 	void OnMovetoCursorPressed();
-
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_OnMovetoCursorPressed();
@@ -184,6 +207,21 @@ private:
 	void Server_OnMovetoCursorReleased_Implementation();
 
 	bool Server_OnMovetoCursorReleased_Validate();
+
+
+	UFUNCTION()
+	void OnAttackPressed();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_OnAttackPressed();
+
+	void Server_OnAttackPressed_Implementation();
+
+	bool Server_OnAttackPressed_Validate();
+
+	
+
+
 
 
 

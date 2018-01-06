@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Character/UnitStatComponent.h"
-
+#include "Character/BaseCharacter.h"
 
 // Sets default values for this component's properties
 UUnitStatComponent::UUnitStatComponent(const class FObjectInitializer& ObjectInitializer)
@@ -21,9 +21,7 @@ FUnitStatInfo UUnitStatComponent::GetStatInfo(EUnitStatType StatType)
 
 void UUnitStatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);	
 
 }
 

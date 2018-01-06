@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 
+#include "Engine/DataTable.h"
 
 #include "SType.generated.h"
 
@@ -77,6 +78,22 @@ struct FCharStateInfo
 };
 
 UENUM()
+enum class ECostType : uint8
+{
+	E_CT_NONE,
+
+	E_CT_HEALTH,
+
+	E_CT_MANA,
+
+	E_CT_ENERGY,
+
+	E_CT_RAGE
+
+
+};
+
+UENUM()
 enum class ESkillType : uint8
 {
 	E_ST_Active,
@@ -86,9 +103,22 @@ enum class ESkillType : uint8
 	MAX
 };
 
+UENUM()
+enum class EDamageType : uint8
+{
+	E_DT_MELLE,
+
+	E_DT_MISSILE,
+
+	E_DT_EXPLOSION,
+
+
+	MAX
+};
+
 
 USTRUCT(BlueprintType)
-struct FSkillInfo
+struct FSkillInfo : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -102,16 +132,33 @@ struct FSkillInfo
 	int32 SkillLevel;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UTexture* SkillIcon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite )
+	class UAnimMontage* Anim;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float Damage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	ECostType CostType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float Cost;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float Distance;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	ESkillType SkillType;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UAnimMontage* Anim;
+	EDamageType DamageType;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UTexture* SkillIcon;
+
+
+
+
 
 
 

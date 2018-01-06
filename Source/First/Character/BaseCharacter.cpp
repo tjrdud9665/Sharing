@@ -5,9 +5,12 @@
 #include "Character/UnitStatComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TopDown/FirstPlayerController.h"
-
 #include "UObject/ConstructorHelpers.h"
 #include "UI/PlayerFrame.h"
+#include "Classes/Animation/AnimMontage.h"
+#include "Classes/Animation/AnimInstance.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Macro.h"
 
 
 // Sets default values
@@ -46,6 +49,7 @@ void ABaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 float ABaseCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+
 	auto UnitHelthInfo= UnitStatComponent->GetStatInfo(EUnitStatType::E_ST_HEALTH);
 	
 
@@ -59,6 +63,9 @@ float ABaseCharacter::TakeDamage(float Damage, struct FDamageEvent const& Damage
 	if (ActualDamage > 0.0f)
 	{
 		UnitHelthInfo.CurrentValue -= ActualDamage;
+		UnitStatComponent->SetUnitStat(EUnitStatType::E_ST_HEALTH, UnitHelthInfo.CurrentValue, UnitHelthInfo.MaxValue);
+
+		UE_LOG(LogTemp, Warning, TEXT(" H : %d"), (int32)UnitHelthInfo.CurrentValue);
 		
 		if (UnitHelthInfo.CurrentValue <= 0)
 		{
@@ -69,6 +76,8 @@ float ABaseCharacter::TakeDamage(float Damage, struct FDamageEvent const& Damage
 
 		}
 	}
+
+	
 
 		
 
@@ -126,4 +135,27 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+void ABaseCharacter::UseSkill(struct FSkillInfo Skill)
+{
+	CurrentUsingSkill = Skill;
+
+	SAFE_ACCESS_VOID(Skill.Anim,L"Montage is NULL");		
+
+	auto Mesh = GetMesh();
+	SAFE_ACCESS_VOID(Mesh,L"Mesh is NULL");
+
+	auto AnimInst = Mesh->GetAnimInstance();
+	SAFE_ACCESS_VOID(AnimInst,L"AnimInstance is NULL");
+
+
+	//TODO : 몽타주가 이전 몽타주/스킬을 캔슬하고 들어가는가? 아닌가?
+	if (!AnimInst->Montage_IsPlaying(Skill.Anim))
+	{
+		AnimInst->Montage_Play(Skill.Anim);
+
+	}
+
+	
+
+}
 

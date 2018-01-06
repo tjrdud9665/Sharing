@@ -25,7 +25,7 @@ protected:
 	TMap<EUnitStatType, FUnitStatInfo> UnitStatMap;
 
 public:
-	UFUNCTION(BlueprintCallable,BlueprintPure)
+	UFUNCTION(BlueprintCallable,BlueprintPure )
 	FUnitStatInfo GetStatInfo(EUnitStatType StatType);
 
 

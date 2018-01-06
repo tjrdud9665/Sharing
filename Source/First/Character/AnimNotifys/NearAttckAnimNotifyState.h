@@ -13,11 +13,24 @@ UCLASS()
 class FIRST_API UNearAttckAnimNotifyState : public UAnimNotifyState
 {
 	GENERATED_BODY()
+private:
+	UPROPERTY()
+		class ABaseCharacter* OwnerCharacter;
+	UPROPERTY()
+	FTimerHandle HitTraceTimer;
 	
+	UPROPERTY()
+	TArray<AActor*> DamagedActors;
 	
+public:
+
+
+
 	
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration) override;
 	
 	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation) override;
 
+
+	void GenerateLineTrace();
 };

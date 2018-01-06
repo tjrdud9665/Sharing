@@ -35,6 +35,7 @@ public:
 	UFUNCTION()
 	void UpdateCharacterState();
 
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -52,9 +53,18 @@ protected:
 	FCharStateInfo CharacterState;
 
 
+	//TODO : 상속해서 APlayerCharacter에서 처리할것..
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite , meta = (AllowPrivateAccess = "true"))
+	TArray<struct FSkillInfo> Skills;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	struct FSkillInfo DefaultAttack;
+
 	UPROPERTY()
-	struct FTakeHitInfo TakeHitInfo;
-	
+		struct FSkillInfo CurrentUsingSkill;
+
+
+
 
 private:
 	//>Components
@@ -62,13 +72,31 @@ private:
 	class UUnitStatComponent* UnitStatComponent;
 
 
+public:
+	UFUNCTION()
+	void UseSkill(struct FSkillInfo Skill);
+
 
 public:
 	FORCEINLINE UUnitStatComponent* GetUnitStatComponent()
 	{
 		return UnitStatComponent;
-	}	
+	}		
+
+	FORCEINLINE const TArray<struct FSkillInfo> GetSkills()
+	{
+		return Skills;
+	}
+
+	FORCEINLINE const FSkillInfo GetDefaultAttack()
+	{
+		return DefaultAttack;
+	}
+
+	FORCEINLINE const FSkillInfo GetCurrentSkill()
+	{
+		return CurrentUsingSkill;
+	}
 	
 
-public:
 };
