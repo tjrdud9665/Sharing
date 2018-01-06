@@ -47,6 +47,7 @@ private:
 	UPROPERTY()
 	FHitResult AttackTraceHit;
 
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CamFollowSpeed" , meta = (AllowPrivateAccess = "true"))
 	float CamearaSpeed = 12.0f;
 

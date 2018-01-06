@@ -10,6 +10,7 @@
 #include "Classes/Animation/AnimMontage.h"
 #include "Classes/Animation/AnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "Macro.h"
 
 
@@ -43,6 +44,7 @@ ABaseCharacter::ABaseCharacter(const class FObjectInitializer& ObjectInitializer
 void ABaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);	
+	DOREPLIFETIME(ABaseCharacter, bMovable);
 	
 
 }
@@ -131,7 +133,8 @@ void ABaseCharacter::Tick(float DeltaTime)
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	Super::SetupPlayerInputComponent(PlayerInputComponent);	
+	
 
 }
 
@@ -152,10 +155,16 @@ void ABaseCharacter::UseSkill(struct FSkillInfo Skill)
 	if (!AnimInst->Montage_IsPlaying(Skill.Anim))
 	{
 		AnimInst->Montage_Play(Skill.Anim);
-
+		bMovable = false;
 	}
+
 
 	
 
+}
+
+void ABaseCharacter::SetMovable(uint32 _NewState)
+{
+	bMovable = _NewState;
 }
 

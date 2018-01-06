@@ -52,6 +52,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterState", meta = (AllowPrivateAccess = "true"))
 	FCharStateInfo CharacterState;
 
+	UPROPERTY(Replicated)
+	uint32 bMovable : 1;
 
 	//TODO : 상속해서 APlayerCharacter에서 처리할것..
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite , meta = (AllowPrivateAccess = "true"))
@@ -76,6 +78,9 @@ public:
 	UFUNCTION()
 	void UseSkill(struct FSkillInfo Skill);
 
+	UFUNCTION()
+	void SetMovable(uint32 _NewState);	
+
 
 public:
 	FORCEINLINE UUnitStatComponent* GetUnitStatComponent()
@@ -98,5 +103,9 @@ public:
 		return CurrentUsingSkill;
 	}
 	
+	FORCEINLINE uint32 IsMovable()
+	{
+		return bMovable;
+	}
 
 };

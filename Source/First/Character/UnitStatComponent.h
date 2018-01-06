@@ -24,6 +24,7 @@ protected:
 	UPROPERTY( EditDefaultsOnly, Category = "UnitUseStat" , meta = (AllowPrivateAccess = "true"))
 	TMap<EUnitStatType, FUnitStatInfo> UnitStatMap;
 
+
 public:
 	UFUNCTION(BlueprintCallable,BlueprintPure )
 	FUnitStatInfo GetStatInfo(EUnitStatType StatType);

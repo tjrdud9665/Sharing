@@ -38,7 +38,11 @@ void UNearAttckAnimNotifyState::NotifyEnd(USkeletalMeshComponent * MeshComp, UAn
 			DamagedActors.Empty();
 			OwnerCharacter->GetWorldTimerManager().ClearTimer(HitTraceTimer);
 		}
+
+		OwnerCharacter->SetMovable(true);
+		OwnerCharacter->StopAnimMontage();
 	}
+
 		
 
 }

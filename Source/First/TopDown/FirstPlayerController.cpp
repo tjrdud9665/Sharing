@@ -225,6 +225,7 @@ void AFirstPlayerController::Respawn()
 		AiController->Possess(PlayerCharacter);
 		Possess(TopDownPawn);
 	}
+	PlayerCharacter->SetMovable(true);
 
 
 }
@@ -269,7 +270,7 @@ void AFirstPlayerController::MoveToDestination(const FHitResult& Hit)
 	{
 
 		if (AiController)
-		{
+		{		
 			AiController->MoveToLocation(Hit.ImpactPoint);
 		}
 	}
