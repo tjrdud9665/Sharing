@@ -27,22 +27,41 @@ private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TMap<EUnitStatType, FLinearColor> StatColors;
 
+	UPROPERTY()
+	EUnitStatType BarStatType;
+
 
 public:
 	UFUNCTION()
 	void Setup(EUnitStatType StatType , class AFirstPlayerController* PlayerController);
 
+	UFUNCTION()
+	void UpdateStatBar();
+
+
+
+
 
 private:
-	UPROPERTY()
-	FStatGaugeInfo GauageInfo;
 
 	UPROPERTY()
 	class AFirstPlayerController* Controller;
 
+	UPROPERTY()
+	class ABaseCharacter* PlayerCharacter;
+
+	UPROPERTY()
+	class UUnitStatComponent* StatComponent;
 
 
 
+
+
+public:
+	FORCEINLINE EUnitStatType GetBarStatType()
+	{
+		return BarStatType;
+	}
 	
 	
 	

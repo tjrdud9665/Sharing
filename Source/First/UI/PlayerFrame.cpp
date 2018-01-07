@@ -83,3 +83,12 @@ void UPlayerFrame::AddStatBar(TArray<EUnitStatType> Stats)
 
 	}
 }
+
+void UPlayerFrame::UpdateStatBars()
+{	
+	for (UUnitStatGauge* Gauage : StatGauages)
+	{
+		Gauage->UpdateStatBar();
+		
+	}
+}

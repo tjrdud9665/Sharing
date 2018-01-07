@@ -47,6 +47,9 @@ private:
 	UPROPERTY()
 	FHitResult AttackTraceHit;
 
+	UPROPERTY()
+	FHitResult MoveTraceHit;
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CamFollowSpeed" , meta = (AllowPrivateAccess = "true"))
 	float CamearaSpeed = 12.0f;
@@ -89,14 +92,25 @@ public:
 		return PlayerCharacter;
 	}
 
+	FORCEINLINE TArray<UPlayerFrame*> GetPlayerFrames()
+	{
+		return PlayerFrames;
+	}
+
 
 //>Client Update
 public:
 	UFUNCTION(Reliable, Client)
 	void Client_UpdatePlayerFrame();
+
+	UFUNCTION()
+	void UpdateProgressBar();
+
 	UFUNCTION(Reliable, Client)
-	void Client_UpdateProgressBar(EUnitStatType StatType, float NewPercent);	
-	void Client_UpdateProgressBar_Implementation(EUnitStatType StatType, float NewPercent);
+	void Client_UpdateProgressBar();	
+	void Client_UpdateProgressBar_Implementation();
+	
+
 
 
 

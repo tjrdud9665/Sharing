@@ -14,11 +14,19 @@ void UNearAttckAnimNotifyState::NotifyBegin(USkeletalMeshComponent * MeshComp, U
 	if (!MeshComp)
 		return;
 
+	
+	UWorld* World = MeshComp->GetWorld();
+	if (!World)
+		return;
+
+
 
 	if (!(MeshComp->GetOwnerRole() < ROLE_Authority)) {
 		OwnerCharacter = Cast<ABaseCharacter>(MeshComp->GetOwner());
+		if (!OwnerCharacter)
+			return;
 
-		OwnerCharacter->GetWorldTimerManager().SetTimer(HitTraceTimer ,this, &UNearAttckAnimNotifyState::GenerateLineTrace, 0.1f, true);
+		OwnerCharacter->GetWorldTimerManager().SetTimer(HitTraceTimer ,this, &UNearAttckAnimNotifyState::GenerateLineTrace, 0.1f ,true);
 	}
 
 
@@ -29,6 +37,14 @@ void UNearAttckAnimNotifyState::NotifyEnd(USkeletalMeshComponent * MeshComp, UAn
 	if (!MeshComp)	
 		return;
 
+	UWorld* World = MeshComp->GetWorld();
+	if (!World)
+		return;
+
+	if (!OwnerCharacter)
+	{
+		return;
+	}
 	
 	//Run Only Server..
 	if (!(MeshComp->GetOwnerRole() < ROLE_Authority))
@@ -39,8 +55,7 @@ void UNearAttckAnimNotifyState::NotifyEnd(USkeletalMeshComponent * MeshComp, UAn
 			OwnerCharacter->GetWorldTimerManager().ClearTimer(HitTraceTimer);
 		}
 
-		OwnerCharacter->SetMovable(true);
-		OwnerCharacter->StopAnimMontage();
+		OwnerCharacter->SetMovable(true);		
 	}
 
 		
@@ -49,7 +64,9 @@ void UNearAttckAnimNotifyState::NotifyEnd(USkeletalMeshComponent * MeshComp, UAn
 
 void UNearAttckAnimNotifyState::GenerateLineTrace()
 {
-	SAFE_ACCESS_VOID(OwnerCharacter, L"NOTIFY : OWnerChar is NULL");
+	if (!OwnerCharacter)
+		return;
+	
 	//TODO : Get Melle Attack Distance form OwnerCharacter or Character's Component..
 	
 	FVector EndPos = OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorForwardVector() * OwnerCharacter->GetCurrentSkill().Distance;
@@ -72,7 +89,8 @@ void UNearAttckAnimNotifyState::GenerateLineTrace()
 		{
 			if (!DamagedActors.Contains(HIts.GetActor()))
 			{
-				HIts.Actor->TakeDamage(30, FDamageEvent(), OwnerCharacter->GetController(), OwnerCharacter);
+				
+				HIts.Actor->TakeDamage(OwnerCharacter->GetCurrentSkill().Damage, FDamageEvent(), OwnerCharacter->GetController(), OwnerCharacter);
 				DamagedActors.Add(HIts.GetActor());
 				//UGameplayStatics::ApplyDamage()
 			}

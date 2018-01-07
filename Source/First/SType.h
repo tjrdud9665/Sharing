@@ -2,7 +2,6 @@
 #pragma once
 
 #include "Engine/DataTable.h"
-
 #include "SType.generated.h"
 
 //UENUM()
@@ -118,7 +117,7 @@ enum class EDamageType : uint8
 
 
 USTRUCT(BlueprintType)
-struct FSkillInfo : public FTableRowBase
+struct FSkillInfo
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -134,7 +133,8 @@ struct FSkillInfo : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UTexture* SkillIcon;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite )
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UAnimMontage* Anim;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
@@ -154,8 +154,6 @@ struct FSkillInfo : public FTableRowBase
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	EDamageType DamageType;
-
-
 
 
 

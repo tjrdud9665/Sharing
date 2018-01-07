@@ -34,9 +34,16 @@ void AFirstPlayerController::PlayerTick(float DeltaTime)
 
 	UpdateFollowCamera(DeltaTime);
 
+
 	//> getHitResult..
 	FHitResult Hit;
 	GetHitResult(Hit);
+	SAFE_ACCESS_NOLOG(PlayerCharacter);
+	if (!PlayerCharacter->IsMovable() )
+	{
+		Hit = MoveTraceHit;
+	}
+
 
 	if (bMoveToMouseCursor)
 	{		//Movement..
@@ -46,7 +53,9 @@ void AFirstPlayerController::PlayerTick(float DeltaTime)
 	{
 		//Attack
 		MouseAttack(AttackTraceHit);
-	}
+		//Server_MouseAttack(AttackTraceHit);
+	}	
+
 
 }
 
@@ -55,7 +64,8 @@ void AFirstPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AFirstPlayerController, TopDownPawn);
-	DOREPLIFETIME(AFirstPlayerController, PlayerCharacter);
+	DOREPLIFETIME(AFirstPlayerController, PlayerCharacter);	
+
 
 
 }
@@ -89,14 +99,22 @@ void AFirstPlayerController::BeginPlay()
 
 }
 
-void AFirstPlayerController::Client_UpdateProgressBar_Implementation(EUnitStatType StatType, float NewPercent)
+
+
+void AFirstPlayerController::UpdateProgressBar()
 {
 	if (HUD)
 	{
-		
-
-
+		for (auto Frame : PlayerFrames)
+		{
+			Frame->UpdateStatBars();
+		}
 	}
+}
+
+void AFirstPlayerController::Client_UpdateProgressBar_Implementation()
+{
+	UpdateProgressBar();
 }
 
 void AFirstPlayerController::UpdateFollowCamera(float DeltaTime)
@@ -146,7 +164,7 @@ void AFirstPlayerController::UpdatePlayerFrame()
 	{		
 		auto Frame = UIFactory::CreatePlayerFrame<UPlayerFrame>(PlayerFrameClass.Get(), this);
 
-		PlayerFrames.Add(Frame);
+		PlayerFrames.Add(Frame);	
 
 		HUD->AddPlayerFramePanel(Frame, 0, i);
 	}
@@ -220,12 +238,15 @@ void AFirstPlayerController::Respawn()
 		
 		PlayerCharacter = GetWorld()->SpawnActor<ABaseCharacter>(RespawnCharacterClass, TopDownPawn->GetActorTransform(), SpawnInfo);
 
+		PlayerCharacter->SetMovable(true);
+		PlayerCharacter->SetFirstPlayerController(this);
+
 		AiController = GetWorld()->SpawnActor<ACharacterAIController>(ACharacterAIController::StaticClass(), TopDownPawn->GetActorTransform());
 
 		AiController->Possess(PlayerCharacter);
 		Possess(TopDownPawn);
 	}
-	PlayerCharacter->SetMovable(true);
+	
 
 
 }
@@ -327,7 +348,7 @@ void AFirstPlayerController::MouseAttack(const FHitResult& Hit)
 	if (PlayerCharacter->GetDefaultAttack().Distance < Distance)
 	{
 		//Go to Actor  
-		MoveToActor(Hit);
+		MoveToActor(Hit);				
 	}
 	else
 	{
@@ -344,11 +365,13 @@ void AFirstPlayerController::MouseAttack(const FHitResult& Hit)
 
 		TargetRot.Yaw = LookRot.Yaw;
 
-		auto LerpedRotation= UKismetMathLibrary::RInterpTo(CurrentRot, TargetRot ,Deltatime, 12.0f);		
+		//auto LerpedRotation= UKismetMathLibrary::RInterpTo(CurrentRot, TargetRot ,Deltatime, 12.0f);		
 		
-		PlayerCharacter->SetActorRotation(LerpedRotation);
+		PlayerCharacter->SetActorRotation(TargetRot);
 
-		PlayerCharacter->UseSkill(PlayerCharacter->GetDefaultAttack());
+		PlayerCharacter->UseSkill(PlayerCharacter->GetDefaultAttack());		
+		bAttackClicked = false;
+
 
 	}
 	
@@ -413,6 +436,11 @@ void AFirstPlayerController::OnMovetoCursorPressed()
 {
 	bMoveToMouseCursor = true;	
 	bAttackClicked = false;
+
+	
+	GetHitResult(MoveTraceHit);
+
+
 	//if it is  client
 	if (Role < ROLE_Authority)
 	{
@@ -444,6 +472,7 @@ void AFirstPlayerController::OnAttackPressed()
 void AFirstPlayerController::Server_OnAttackPressed_Implementation()
 {
 	bAttackClicked = true;
+	
 	OnAttackPressed();
 }
 
@@ -466,7 +495,8 @@ bool AFirstPlayerController::Server_OnMovetoCursorPressed_Validate()
 
 void AFirstPlayerController::OnMovetoCursorReleased()
 {
-	bMoveToMouseCursor = false;
+	bMoveToMouseCursor = false;	
+
 
 	
 

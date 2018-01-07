@@ -63,7 +63,10 @@ protected:
 	struct FSkillInfo DefaultAttack;
 
 	UPROPERTY()
-		struct FSkillInfo CurrentUsingSkill;
+	struct FSkillInfo CurrentUsingSkill;
+
+	UPROPERTY()
+	class AFirstPlayerController* PlayerController;
 
 
 
@@ -78,8 +81,34 @@ public:
 	UFUNCTION()
 	void UseSkill(struct FSkillInfo Skill);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_UseSkill(struct FSkillInfo Skill);
+
+	void Server_UseSkill_Implementation(struct FSkillInfo Skill);
+	bool Server_UseSkill_Validate(struct FSkillInfo Skill);
+
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_PlayAnim(class UAnimMontage* Anim);
+	void Server_PlayAnim_Implementation(class UAnimMontage* Anim);
+	bool Server_PlayAnim_Validate(class UAnimMontage* Anim);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiCast_PlayAnim(class UAnimMontage* Anim);
+	void MultiCast_PlayAnim_Implementation(class UAnimMontage* Anim);
+
+
+
+
+
 	UFUNCTION()
 	void SetMovable(uint32 _NewState);	
+
+	UFUNCTION()
+	void SetFirstPlayerController(class AFirstPlayerController* _Controller);
+
+
+
 
 
 public:
@@ -106,6 +135,11 @@ public:
 	FORCEINLINE uint32 IsMovable()
 	{
 		return bMovable;
+	}
+
+	FORCEINLINE AFirstPlayerController* GetFirstPlayerController()
+	{
+		return PlayerController;
 	}
 
 };

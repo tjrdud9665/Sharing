@@ -51,8 +51,8 @@ void ABaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 float ABaseCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-
 	auto UnitHelthInfo= UnitStatComponent->GetStatInfo(EUnitStatType::E_ST_HEALTH);
+	
 	
 
 
@@ -80,10 +80,6 @@ float ABaseCharacter::TakeDamage(float Damage, struct FDamageEvent const& Damage
 	}
 
 	
-
-		
-
-
 	return ActualDamage;
 
 }
@@ -108,6 +104,7 @@ void ABaseCharacter::UpdateCharacterState()
 	{
 		GetCharacterMovement()->MaxWalkSpeed = WALK_SPEED + (DASH_SPEED* SpeedPerCentBuff);
 	}
+	
 }
 
 
@@ -141,30 +138,70 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void ABaseCharacter::UseSkill(struct FSkillInfo Skill)
 {
 	CurrentUsingSkill = Skill;
+	
+	
+	
+	bMovable = false;	
 
-	SAFE_ACCESS_VOID(Skill.Anim,L"Montage is NULL");		
-
-	auto Mesh = GetMesh();
-	SAFE_ACCESS_VOID(Mesh,L"Mesh is NULL");
-
-	auto AnimInst = Mesh->GetAnimInstance();
-	SAFE_ACCESS_VOID(AnimInst,L"AnimInstance is NULL");
-
-
-	//TODO : 몽타주가 이전 몽타주/스킬을 캔슬하고 들어가는가? 아닌가?
-	if (!AnimInst->Montage_IsPlaying(Skill.Anim))
+	Server_PlayAnim(CurrentUsingSkill.Anim);	
+	
+	if (Role < ROLE_Authority)
 	{
-		AnimInst->Montage_Play(Skill.Anim);
-		bMovable = false;
+		Server_UseSkill(Skill);		
 	}
-
-
+	
 	
 
 }
+
+void ABaseCharacter::Server_UseSkill_Implementation(struct FSkillInfo Skill)
+{
+	UseSkill(Skill);
+}
+
+bool ABaseCharacter::Server_UseSkill_Validate(struct FSkillInfo Skill)
+{
+	return true;
+}
+
+void ABaseCharacter::Server_PlayAnim_Implementation(class UAnimMontage* Anim)
+{
+	MultiCast_PlayAnim(Anim);
+}
+
+bool ABaseCharacter::Server_PlayAnim_Validate(class UAnimMontage* Anim)
+{
+	return true;
+}
+
+void ABaseCharacter::MultiCast_PlayAnim_Implementation(class UAnimMontage* Anim)
+{
+	SAFE_ACCESS_VOID(Anim, L"Anim is NULL");
+	auto Mesh = GetMesh();
+	SAFE_ACCESS_VOID(Mesh, L"Mesh is NULL");
+
+	auto AnimInst = Mesh->GetAnimInstance();
+	
+
+	//TODO : 몽타주가 이전 몽타주/스킬을 캔슬하고 들어가는가? 아닌가?
+	if (!AnimInst->Montage_IsPlaying(Anim))
+	{	
+		PlayAnimMontage(Anim);
+		
+		
+	}
+}
+
 
 void ABaseCharacter::SetMovable(uint32 _NewState)
 {
 	bMovable = _NewState;
 }
+
+void ABaseCharacter::SetFirstPlayerController(class AFirstPlayerController* _Controller)
+{
+	PlayerController = _Controller;
+}
+
+
 

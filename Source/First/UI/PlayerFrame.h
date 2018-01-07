@@ -33,6 +33,9 @@ public:
 	UFUNCTION()
 	void AddStatBar(TArray<EUnitStatType> Stats);
 
+	UFUNCTION()
+		void UpdateStatBars();
+
 
 private:
 	//Frame..
@@ -63,6 +66,12 @@ private:
 	TArray<class UUnitStatGauge*> StatGauages;
 
 
+
+public:
+	FORCEINLINE TArray<class UUnitStatGauge*> GetStatGauge()
+	{
+		return StatGauages;
+	}
 
 
 	
